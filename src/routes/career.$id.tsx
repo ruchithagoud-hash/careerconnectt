@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Award, Briefcase, Building2, GraduationCap, MapPin, Rocket, Target, Wallet, BookOpen, Layers } from "lucide-react";
 import { AppShell, AppHeader } from "@/components/AppShell";
-import { CAREERS } from "@/lib/career-data";
+import { CAREERS, type Career } from "@/lib/career-data";
 
 export const Route = createFileRoute("/career/$id")({
   head: ({ params }) => {
