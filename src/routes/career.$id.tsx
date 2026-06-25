@@ -16,7 +16,8 @@ export const Route = createFileRoute("/career/$id")({
   loader: ({ params }) => {
     const career = CAREERS.find((c) => c.id === params.id);
     if (!career) throw notFound();
-    return { career };
+    return { career: career! };
+
   },
   notFoundComponent: () => (
     <AppShell>
