@@ -31,7 +31,7 @@ export const Route = createFileRoute("/career/$id")({
 });
 
 function CareerDetail() {
-  const { career } = Route.useLoaderData();
+  const { career } = Route.useLoaderData() as { career: Career };
 
   return (
     <AppShell>
