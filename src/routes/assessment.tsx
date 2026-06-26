@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/assessment")({
   head: () => ({
-    meta: [{ title: "Career Assessment · CareerCompass" }],
+    meta: [{ title: "Career Assessment · CareerConnect" }],
   }),
   component: Assessment,
 });

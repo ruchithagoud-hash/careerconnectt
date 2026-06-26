@@ -31,65 +31,54 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-brand-blue: var(--brand-blue);
-  --color-brand-indigo: var(--brand-indigo);
+  --color-brand-purple: var(--brand-purple);
   --color-brand-soft: var(--brand-soft);
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  --radius: 1.125rem;
-  /* #F8FAFC */
-  --background: oklch(0.984 0.003 247);
-  /* #111827 */
-  --foreground: oklch(0.21 0.034 264);
+  --radius: 1rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.2 0.04 270);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.21 0.034 264);
+  --card-foreground: oklch(0.2 0.04 270);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.21 0.034 264);
-  /* #2563EB */
-  --primary: oklch(0.546 0.215 262);
+  --popover-foreground: oklch(0.2 0.04 270);
+  --primary: oklch(0.55 0.22 275);
   --primary-foreground: oklch(0.99 0 0);
-  /* slate-100 */
-  --secondary: oklch(0.968 0.007 247);
-  --secondary-foreground: oklch(0.3 0.08 262);
-  --muted: oklch(0.968 0.007 247);
-  /* #6B7280 */
-  --muted-foreground: oklch(0.55 0.022 257);
-  --accent: oklch(0.95 0.03 262);
-  --accent-foreground: oklch(0.35 0.18 264);
+  --secondary: oklch(0.97 0.02 280);
+  --secondary-foreground: oklch(0.3 0.1 275);
+  --muted: oklch(0.97 0.015 270);
+  --muted-foreground: oklch(0.52 0.04 270);
+  --accent: oklch(0.95 0.05 285);
+  --accent-foreground: oklch(0.35 0.18 280);
   --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: oklch(0.99 0 0);
-  /* slate-200 */
-  --border: oklch(0.929 0.013 256);
-  --input: oklch(0.929 0.013 256);
-  --ring: oklch(0.546 0.215 262);
-  /* #2563EB */
-  --brand-blue: oklch(0.546 0.215 262);
-  /* #4F46E5 */
-  --brand-indigo: oklch(0.51 0.225 277);
-  --brand-soft: oklch(0.97 0.022 262);
-  --gradient-brand: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%);
-  --gradient-brand-vivid: linear-gradient(135deg, #1D4ED8 0%, #4338CA 100%);
-  --gradient-soft: linear-gradient(135deg, #EFF6FF 0%, #EEF2FF 100%);
-  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -12px rgb(37 99 235 / 0.12);
-  --shadow-soft: 0 1px 2px rgb(15 23 42 / 0.04), 0 2px 8px -4px rgb(15 23 42 / 0.06);
-  --shadow-glow: 0 10px 30px -12px rgb(37 99 235 / 0.45);
+  --border: oklch(0.93 0.015 270);
+  --input: oklch(0.93 0.015 270);
+  --ring: oklch(0.6 0.18 275);
+  --brand-blue: oklch(0.62 0.2 250);
+  --brand-purple: oklch(0.55 0.24 295);
+  --brand-soft: oklch(0.97 0.03 280);
+  --gradient-brand: linear-gradient(135deg, oklch(0.62 0.2 250), oklch(0.55 0.24 295));
+  --gradient-soft: linear-gradient(135deg, oklch(0.97 0.04 250), oklch(0.96 0.05 295));
+  --shadow-card: 0 4px 20px -8px oklch(0.55 0.22 275 / 0.18);
+  --shadow-soft: 0 2px 10px -4px oklch(0.55 0.22 275 / 0.08);
+  --shadow-glow: 0 10px 40px -10px oklch(0.55 0.22 275 / 0.4);
 }
 
 @layer base {
   * { border-color: var(--color-border); }
-  html, body { background-color: var(--color-background); }
   body {
+    background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    font-feature-settings: "cv11", "ss01";
   }
 }
 
 @utility bg-gradient-brand { background-image: var(--gradient-brand); }
-@utility bg-gradient-brand-vivid { background-image: var(--gradient-brand-vivid); }
 @utility bg-gradient-soft { background-image: var(--gradient-soft); }
 @utility text-gradient-brand {
   background-image: var(--gradient-brand);
@@ -100,9 +89,3 @@
 @utility shadow-card { box-shadow: var(--shadow-card); }
 @utility shadow-soft { box-shadow: var(--shadow-soft); }
 @utility shadow-glow { box-shadow: var(--shadow-glow); }
-
-@keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@utility animate-fade-in-up { animation: fade-in-up 0.4s ease-out both; }
