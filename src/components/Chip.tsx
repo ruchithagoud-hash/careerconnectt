@@ -15,7 +15,7 @@ export function Chip({
       type="button"
       onClick={onClick}
       className={cn(
-        "group inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-all duration-200 active:scale-95",
+        "group inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition-all duration-200 active:scale-95",
         selected
           ? "bg-gradient-brand border-transparent text-white shadow-soft"
           : "border-border bg-card text-foreground hover:border-primary/40 hover:bg-secondary"
