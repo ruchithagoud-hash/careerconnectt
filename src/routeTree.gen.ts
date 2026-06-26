@@ -9,14 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SavedRouteImport } from './routes/saved'
 import { Route as ResultsRouteImport } from './routes/results'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as CareersRouteImport } from './routes/careers'
 import { Route as AssessmentRouteImport } from './routes/assessment'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CareerIdRouteImport } from './routes/career.$id'
 
+const SavedRoute = SavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResultsRoute = ResultsRouteImport.update({
   id: '/results',
   path: '/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareersRoute = CareersRouteImport.update({
+  id: '/careers',
+  path: '/careers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssessmentRoute = AssessmentRouteImport.update({
@@ -38,44 +56,99 @@ const CareerIdRoute = CareerIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assessment': typeof AssessmentRoute
+  '/careers': typeof CareersRoute
+  '/profile': typeof ProfileRoute
   '/results': typeof ResultsRoute
+  '/saved': typeof SavedRoute
   '/career/$id': typeof CareerIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/assessment': typeof AssessmentRoute
+  '/careers': typeof CareersRoute
+  '/profile': typeof ProfileRoute
   '/results': typeof ResultsRoute
+  '/saved': typeof SavedRoute
   '/career/$id': typeof CareerIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/assessment': typeof AssessmentRoute
+  '/careers': typeof CareersRoute
+  '/profile': typeof ProfileRoute
   '/results': typeof ResultsRoute
+  '/saved': typeof SavedRoute
   '/career/$id': typeof CareerIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/assessment' | '/results' | '/career/$id'
+  fullPaths:
+    | '/'
+    | '/assessment'
+    | '/careers'
+    | '/profile'
+    | '/results'
+    | '/saved'
+    | '/career/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/assessment' | '/results' | '/career/$id'
-  id: '__root__' | '/' | '/assessment' | '/results' | '/career/$id'
+  to:
+    | '/'
+    | '/assessment'
+    | '/careers'
+    | '/profile'
+    | '/results'
+    | '/saved'
+    | '/career/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/assessment'
+    | '/careers'
+    | '/profile'
+    | '/results'
+    | '/saved'
+    | '/career/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AssessmentRoute: typeof AssessmentRoute
+  CareersRoute: typeof CareersRoute
+  ProfileRoute: typeof ProfileRoute
   ResultsRoute: typeof ResultsRoute
+  SavedRoute: typeof SavedRoute
   CareerIdRoute: typeof CareerIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/saved': {
+      id: '/saved'
+      path: '/saved'
+      fullPath: '/saved'
+      preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/results': {
       id: '/results'
       path: '/results'
       fullPath: '/results'
       preLoaderRoute: typeof ResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/careers': {
+      id: '/careers'
+      path: '/careers'
+      fullPath: '/careers'
+      preLoaderRoute: typeof CareersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/assessment': {
@@ -105,7 +178,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AssessmentRoute: AssessmentRoute,
+  CareersRoute: CareersRoute,
+  ProfileRoute: ProfileRoute,
   ResultsRoute: ResultsRoute,
+  SavedRoute: SavedRoute,
   CareerIdRoute: CareerIdRoute,
 }
 export const routeTree = rootRouteImport
