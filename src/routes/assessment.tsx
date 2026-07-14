@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { isAuthenticated } from "@/lib/auth";
 import { Search, Plus, X } from "lucide-react";
 import { AppShell, AppHeader } from "@/components/AppShell";
 import { Chip } from "@/components/Chip";
@@ -32,6 +33,10 @@ function Assessment() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [data, setData] = useState<AssessmentData>(DEFAULT_ASSESSMENT);
+
+  useEffect(() => {
+    if (!isAuthenticated()) navigate({ to: "/auth" });
+  }, [navigate]);
 
   const update = <K extends keyof AssessmentData>(key: K, value: AssessmentData[K]) =>
     setData((d) => ({ ...d, [key]: value }));
