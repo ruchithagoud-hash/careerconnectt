@@ -91,7 +91,9 @@ function Verify() {
           {digits.map((d, i) => (
             <input
               key={i}
-              ref={(el) => (inputs.current[i] = el)}
+              ref={(el) => {
+                inputs.current[i] = el;
+              }}
               value={d}
               onChange={(e) => onChange(i, e.target.value)}
               onKeyDown={(e) => onKey(i, e)}
