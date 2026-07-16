@@ -43,13 +43,11 @@ function Password() {
     if (!pending) return navigate({ to: "/auth" });
     setBusy(true);
     try {
-      if (reset === "1" && pending.accountId) {
-        await resetPassword(pending.accountId, pw);
+      if (reset === "1") {
+        await resetPassword(pw);
       } else {
         await createAccount({
           fullName: pending.fullName || "Student",
-          email: pending.email,
-          mobile: pending.mobile,
           password: pw,
         });
       }

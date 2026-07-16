@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, AppHeader } from "@/components/AppShell";
-import { findAccount, isEmail, isMobile, startPending } from "@/lib/auth";
+import { isEmail, isMobile, startPending } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { KeyRound } from "lucide-react";
 
@@ -14,20 +14,21 @@ function Forgot() {
   const navigate = useNavigate();
   const [identifier, setIdentifier] = useState("");
   const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const submit = () => {
+  const submit = async () => {
     setError("");
     if (!isEmail(identifier) && !isMobile(identifier))
       return setError("Enter a valid email or mobile number.");
-    const acc = findAccount(identifier);
-    if (!acc) return setError("No account found for this email/mobile.");
-    startPending({
-      kind: "forgot",
-      email: acc.email,
-      mobile: acc.mobile,
-      accountId: acc.id,
-    });
-    navigate({ to: "/auth/verify" });
+    setBusy(true);
+    try {
+      await startPending({ kind: "forgot", identifier: identifier.trim() });
+      navigate({ to: "/auth/verify" });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not send OTP.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -62,13 +63,13 @@ function Forgot() {
 
         <button
           onClick={submit}
-          disabled={!identifier.trim()}
+          disabled={!identifier.trim() || busy}
           className={cn(
             "mt-8 h-12 w-full rounded-2xl text-sm font-semibold text-white transition-all active:scale-[0.98]",
-            identifier.trim() ? "bg-gradient-brand shadow-glow" : "bg-muted text-muted-foreground",
+            identifier.trim() && !busy ? "bg-gradient-brand shadow-glow" : "bg-muted text-muted-foreground",
           )}
         >
-          Send OTP
+          {busy ? "Sending code…" : "Send OTP"}
         </button>
       </main>
     </AppShell>
