@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, AppHeader } from "@/components/AppShell";
-import { findAccount, isEmail, isMobile, startPending } from "@/lib/auth";
+import { isEmail, isMobile, startPending } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth/register")({
@@ -14,24 +14,29 @@ function Register() {
   const [fullName, setFullName] = useState("");
   const [identifier, setIdentifier] = useState("");
   const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const submit = () => {
+  const submit = async () => {
     setError("");
     if (fullName.trim().length < 2) return setError("Please enter your full name.");
-    const isE = isEmail(identifier);
-    const isM = !isE && isMobile(identifier);
-    if (!isE && !isM) return setError("Enter a valid email address or mobile number.");
-    if (findAccount(identifier)) return setError("An account with this email/mobile already exists.");
-    startPending({
-      kind: "register",
-      fullName: fullName.trim(),
-      email: isE ? identifier.trim() : undefined,
-      mobile: isM ? identifier.trim() : undefined,
-    });
-    navigate({ to: "/auth/verify" });
+    if (!isEmail(identifier) && !isMobile(identifier))
+      return setError("Enter a valid email address or mobile number.");
+    setBusy(true);
+    try {
+      await startPending({
+        kind: "register",
+        fullName: fullName.trim(),
+        identifier: identifier.trim(),
+      });
+      navigate({ to: "/auth/verify" });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not send OTP.");
+    } finally {
+      setBusy(false);
+    }
   };
 
-  const canNext = fullName.trim().length >= 2 && identifier.trim().length > 0;
+  const canNext = fullName.trim().length >= 2 && identifier.trim().length > 0 && !busy;
 
   return (
     <AppShell>
@@ -76,7 +81,7 @@ function Register() {
             canNext ? "bg-gradient-brand shadow-glow" : "bg-muted text-muted-foreground",
           )}
         >
-          Continue
+          {busy ? "Sending code…" : "Continue"}
         </button>
 
         <p className="mt-4 text-center text-xs text-muted-foreground">
