@@ -1,67 +1,39 @@
-// Client-side auth store for the CareerConnect prototype.
-// Uses localStorage (accounts) + sessionStorage (active session).
-// Passwords are hashed with SHA-256 (prototype-grade, not production crypto).
+// Thin client wrapper around the server auth API.
+// Keeps the previous public surface where possible so UI routes don't need to change.
+// - Accounts live in the database (server-side, service role only).
+// - Passwords are bcrypt-hashed on the server (never touched here).
+// - Session = JWT (HS256) stored in sessionStorage under cc.session.
+// - Pending OTP flow state stays in sessionStorage (client-side transient only).
 
-const ACCOUNTS_KEY = "cc.accounts";
+import * as api from "./auth-api.functions";
+
 const SESSION_KEY = "cc.session";
-const PENDING_KEY = "cc.pending"; // in-progress registration / forgot flow
+const USER_KEY = "cc.user";
+const PENDING_KEY = "cc.pending";
 
 export type Account = {
   id: string;
   fullName: string;
-  email?: string;
-  mobile?: string;
-  passwordHash: string;
-  verified: boolean;
-  createdAt: string;
-  updatedAt: string;
+  email?: string | null;
+  mobile?: string | null;
 };
 
 export type PendingFlow = {
   kind: "register" | "forgot";
   fullName?: string;
-  email?: string;
-  mobile?: string;
-  otp: string;
+  identifier: string; // normalized (lower email or digits mobile)
+  isEmail: boolean;
   otpExpiresAt: number;
+  otp?: string; // devOtp — only present when email delivery hasn't shipped yet
   verified?: boolean;
-  accountId?: string; // for forgot
+  verificationToken?: string; // returned by verifyOtp, consumed by register/resetPassword
 };
 
 const isBrowser = () => typeof window !== "undefined";
 
-async function sha256(input: string): Promise<string> {
-  const enc = new TextEncoder().encode(input);
-  const buf = await crypto.subtle.digest("SHA-256", enc);
-  return Array.from(new Uint8Array(buf))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-function readAccounts(): Account[] {
-  if (!isBrowser()) return [];
-  try {
-    return JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || "[]");
-  } catch {
-    return [];
-  }
-}
-
-function writeAccounts(a: Account[]) {
-  localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(a));
-}
-
-export function findAccount(identifier: string): Account | undefined {
-  const id = identifier.trim().toLowerCase();
-  return readAccounts().find(
-    (a) => a.email?.toLowerCase() === id || a.mobile === identifier.trim(),
-  );
-}
-
 export function isEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 }
-
 export function isMobile(v: string) {
   const digits = v.replace(/\D/g, "");
   return digits.length >= 10 && digits.length <= 15;
@@ -74,7 +46,6 @@ export type PasswordCheck = {
   number: boolean;
   special: boolean;
 };
-
 export function checkPassword(p: string): PasswordCheck {
   return {
     length: p.length >= 8,
@@ -84,23 +55,11 @@ export function checkPassword(p: string): PasswordCheck {
     special: /[^A-Za-z0-9]/.test(p),
   };
 }
-
 export function passwordValid(p: string) {
   return Object.values(checkPassword(p)).every(Boolean);
 }
 
-// ---- Pending flow (registration / forgot) ----
-
-export function startPending(input: Omit<PendingFlow, "otp" | "otpExpiresAt">): PendingFlow {
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  const pending: PendingFlow = {
-    ...input,
-    otp,
-    otpExpiresAt: Date.now() + 60_000, // 60s
-  };
-  sessionStorage.setItem(PENDING_KEY, JSON.stringify(pending));
-  return pending;
-}
+// ---- Pending flow ----
 
 export function getPending(): PendingFlow | null {
   if (!isBrowser()) return null;
@@ -110,83 +69,136 @@ export function getPending(): PendingFlow | null {
     return null;
   }
 }
-
-export function updatePending(patch: Partial<PendingFlow>) {
+export function updatePending(patch: Partial<PendingFlow>): PendingFlow | null {
   const cur = getPending();
   if (!cur) return null;
   const next = { ...cur, ...patch };
   sessionStorage.setItem(PENDING_KEY, JSON.stringify(next));
   return next;
 }
+export function clearPending() {
+  if (isBrowser()) sessionStorage.removeItem(PENDING_KEY);
+}
 
-export function resendOtp(): PendingFlow | null {
+function writePending(p: PendingFlow) {
+  sessionStorage.setItem(PENDING_KEY, JSON.stringify(p));
+}
+
+export async function startPending(input: {
+  kind: "register" | "forgot";
+  fullName?: string;
+  identifier: string;
+}): Promise<PendingFlow> {
+  const res = await api.sendOtp({
+    data: {
+      purpose: input.kind,
+      fullName: input.fullName,
+      identifier: input.identifier,
+    },
+  });
+  const pending: PendingFlow = {
+    kind: input.kind,
+    fullName: input.fullName,
+    identifier: res.identifier,
+    isEmail: res.isEmail,
+    otpExpiresAt: new Date(res.expiresAt).getTime(),
+    otp: res.devOtp,
+  };
+  writePending(pending);
+  return pending;
+}
+
+export async function resendOtp(): Promise<PendingFlow | null> {
   const cur = getPending();
   if (!cur) return null;
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  return updatePending({ otp, otpExpiresAt: Date.now() + 60_000 });
-}
-
-export function clearPending() {
-  sessionStorage.removeItem(PENDING_KEY);
-}
-
-// ---- Account creation / login ----
-
-export async function createAccount(params: {
-  fullName: string;
-  email?: string;
-  mobile?: string;
-  password: string;
-}): Promise<Account> {
-  const accounts = readAccounts();
-  const identifier = params.email || params.mobile;
-  if (!identifier) throw new Error("Email or mobile required");
-  if (findAccount(identifier)) throw new Error("Account already exists");
-  const now = new Date().toISOString();
-  const account: Account = {
-    id: crypto.randomUUID(),
-    fullName: params.fullName,
-    email: params.email,
-    mobile: params.mobile,
-    passwordHash: await sha256(params.password),
-    verified: true,
-    createdAt: now,
-    updatedAt: now,
+  const res = await api.sendOtp({
+    data: {
+      purpose: cur.kind,
+      fullName: cur.fullName,
+      identifier: cur.identifier,
+    },
+  });
+  const next: PendingFlow = {
+    ...cur,
+    otpExpiresAt: new Date(res.expiresAt).getTime(),
+    otp: res.devOtp,
+    verified: false,
+    verificationToken: undefined,
   };
-  accounts.push(account);
-  writeAccounts(accounts);
-  return account;
+  writePending(next);
+  return next;
+}
+
+export async function submitOtp(code: string): Promise<PendingFlow> {
+  const cur = getPending();
+  if (!cur) throw new Error("Session expired. Please restart the flow.");
+  const res = await api.verifyOtp({
+    data: { identifier: cur.identifier, purpose: cur.kind, code },
+  });
+  const next: PendingFlow = {
+    ...cur,
+    verified: true,
+    verificationToken: res.verificationToken,
+    otp: undefined,
+  };
+  writePending(next);
+  return next;
+}
+
+// ---- Account creation / login / reset ----
+
+function persistSession(token: string, user: Account) {
+  sessionStorage.setItem(SESSION_KEY, token);
+  sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+}
+
+export async function createAccount(params: { fullName: string; password: string }): Promise<Account> {
+  const pending = getPending();
+  if (!pending?.verificationToken) throw new Error("Please verify your email/mobile first.");
+  const res = await api.register({
+    data: {
+      fullName: params.fullName,
+      password: params.password,
+      verificationToken: pending.verificationToken,
+    },
+  });
+  persistSession(res.token, res.user as Account);
+  return res.user as Account;
 }
 
 export async function login(identifier: string, password: string): Promise<Account> {
-  const acc = findAccount(identifier);
-  if (!acc) throw new Error("No account found for this email/mobile");
-  const hash = await sha256(password);
-  if (hash !== acc.passwordHash) throw new Error("Incorrect password");
-  sessionStorage.setItem(SESSION_KEY, acc.id);
-  return acc;
+  const res = await api.login({ data: { identifier, password } });
+  persistSession(res.token, res.user as Account);
+  return res.user as Account;
 }
 
-export async function resetPassword(accountId: string, password: string) {
-  const accounts = readAccounts();
-  const idx = accounts.findIndex((a) => a.id === accountId);
-  if (idx === -1) throw new Error("Account not found");
-  accounts[idx].passwordHash = await sha256(password);
-  accounts[idx].updatedAt = new Date().toISOString();
-  writeAccounts(accounts);
+export async function resetPassword(password: string): Promise<void> {
+  const pending = getPending();
+  if (!pending?.verificationToken) throw new Error("Please verify your email/mobile first.");
+  await api.resetPassword({
+    data: { password, verificationToken: pending.verificationToken },
+  });
 }
 
 export function getCurrentAccount(): Account | null {
   if (!isBrowser()) return null;
-  const id = sessionStorage.getItem(SESSION_KEY);
-  if (!id) return null;
-  return readAccounts().find((a) => a.id === id) || null;
+  const raw = sessionStorage.getItem(USER_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
 }
-
+export function getSessionToken(): string | null {
+  if (!isBrowser()) return null;
+  return sessionStorage.getItem(SESSION_KEY);
+}
 export function logout() {
+  if (!isBrowser()) return;
   sessionStorage.removeItem(SESSION_KEY);
+  sessionStorage.removeItem(USER_KEY);
 }
-
 export function isAuthenticated(): boolean {
-  return !!getCurrentAccount();
+  return !!getSessionToken() && !!getCurrentAccount();
 }
