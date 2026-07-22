@@ -5,10 +5,10 @@ import { AppShell } from "@/components/AppShell";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CareerConnect — Discover the Career That's Right for You" },
+      { title: "CareerCompass — Discover the Career That's Right for You" },
       { name: "description", content: "AI-powered career recommendations for students based on skills, projects, certifications, and interests." },
-      { property: "og:title", content: "CareerConnect — AI Career Recommendations" },
-      { property: "og:description", content: "Find the career that fits you, in 7 quick steps." },
+      { property: "og:title", content: "CareerCompass — Discover the Career That's Right for You" },
+      { property: "og:description", content: "AI-powered career recommendations for students based on skills, projects, certifications, and interests." },
     ],
   }),
   component: Welcome,
