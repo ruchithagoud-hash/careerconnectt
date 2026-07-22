@@ -12,13 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as AssessmentRouteImport } from './routes/assessment'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthIndexRouteImport } from './routes/auth.index'
 import { Route as CareerIdRouteImport } from './routes/career.$id'
-import { Route as AuthVerifyRouteImport } from './routes/auth.verify'
-import { Route as AuthRegisterRouteImport } from './routes/auth.register'
-import { Route as AuthPasswordRouteImport } from './routes/auth.password'
-import { Route as AuthLoginRouteImport } from './routes/auth.login'
-import { Route as AuthForgotRouteImport } from './routes/auth.forgot'
 
 const ResultsRoute = ResultsRouteImport.update({
   id: '/results',
@@ -35,39 +29,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthIndexRoute = AuthIndexRouteImport.update({
-  id: '/auth/',
-  path: '/auth/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CareerIdRoute = CareerIdRouteImport.update({
   id: '/career/$id',
   path: '/career/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthVerifyRoute = AuthVerifyRouteImport.update({
-  id: '/auth/verify',
-  path: '/auth/verify',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRegisterRoute = AuthRegisterRouteImport.update({
-  id: '/auth/register',
-  path: '/auth/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthPasswordRoute = AuthPasswordRouteImport.update({
-  id: '/auth/password',
-  path: '/auth/password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: '/auth/login',
-  path: '/auth/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthForgotRoute = AuthForgotRouteImport.update({
-  id: '/auth/forgot',
-  path: '/auth/forgot',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -75,89 +39,34 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assessment': typeof AssessmentRoute
   '/results': typeof ResultsRoute
-  '/auth/forgot': typeof AuthForgotRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/password': typeof AuthPasswordRoute
-  '/auth/register': typeof AuthRegisterRoute
-  '/auth/verify': typeof AuthVerifyRoute
   '/career/$id': typeof CareerIdRoute
-  '/auth/': typeof AuthIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/assessment': typeof AssessmentRoute
   '/results': typeof ResultsRoute
-  '/auth/forgot': typeof AuthForgotRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/password': typeof AuthPasswordRoute
-  '/auth/register': typeof AuthRegisterRoute
-  '/auth/verify': typeof AuthVerifyRoute
   '/career/$id': typeof CareerIdRoute
-  '/auth': typeof AuthIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/assessment': typeof AssessmentRoute
   '/results': typeof ResultsRoute
-  '/auth/forgot': typeof AuthForgotRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/password': typeof AuthPasswordRoute
-  '/auth/register': typeof AuthRegisterRoute
-  '/auth/verify': typeof AuthVerifyRoute
   '/career/$id': typeof CareerIdRoute
-  '/auth/': typeof AuthIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/assessment'
-    | '/results'
-    | '/auth/forgot'
-    | '/auth/login'
-    | '/auth/password'
-    | '/auth/register'
-    | '/auth/verify'
-    | '/career/$id'
-    | '/auth/'
+  fullPaths: '/' | '/assessment' | '/results' | '/career/$id'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/assessment'
-    | '/results'
-    | '/auth/forgot'
-    | '/auth/login'
-    | '/auth/password'
-    | '/auth/register'
-    | '/auth/verify'
-    | '/career/$id'
-    | '/auth'
-  id:
-    | '__root__'
-    | '/'
-    | '/assessment'
-    | '/results'
-    | '/auth/forgot'
-    | '/auth/login'
-    | '/auth/password'
-    | '/auth/register'
-    | '/auth/verify'
-    | '/career/$id'
-    | '/auth/'
+  to: '/' | '/assessment' | '/results' | '/career/$id'
+  id: '__root__' | '/' | '/assessment' | '/results' | '/career/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AssessmentRoute: typeof AssessmentRoute
   ResultsRoute: typeof ResultsRoute
-  AuthForgotRoute: typeof AuthForgotRoute
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthPasswordRoute: typeof AuthPasswordRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
-  AuthVerifyRoute: typeof AuthVerifyRoute
   CareerIdRoute: typeof CareerIdRoute
-  AuthIndexRoute: typeof AuthIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -183,53 +92,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/': {
-      id: '/auth/'
-      path: '/auth'
-      fullPath: '/auth/'
-      preLoaderRoute: typeof AuthIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/career/$id': {
       id: '/career/$id'
       path: '/career/$id'
       fullPath: '/career/$id'
       preLoaderRoute: typeof CareerIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/verify': {
-      id: '/auth/verify'
-      path: '/auth/verify'
-      fullPath: '/auth/verify'
-      preLoaderRoute: typeof AuthVerifyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/register': {
-      id: '/auth/register'
-      path: '/auth/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthRegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/password': {
-      id: '/auth/password'
-      path: '/auth/password'
-      fullPath: '/auth/password'
-      preLoaderRoute: typeof AuthPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/login': {
-      id: '/auth/login'
-      path: '/auth/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/forgot': {
-      id: '/auth/forgot'
-      path: '/auth/forgot'
-      fullPath: '/auth/forgot'
-      preLoaderRoute: typeof AuthForgotRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -239,13 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AssessmentRoute: AssessmentRoute,
   ResultsRoute: ResultsRoute,
-  AuthForgotRoute: AuthForgotRoute,
-  AuthLoginRoute: AuthLoginRoute,
-  AuthPasswordRoute: AuthPasswordRoute,
-  AuthRegisterRoute: AuthRegisterRoute,
-  AuthVerifyRoute: AuthVerifyRoute,
   CareerIdRoute: CareerIdRoute,
-  AuthIndexRoute: AuthIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
