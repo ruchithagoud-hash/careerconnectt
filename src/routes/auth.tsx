@@ -17,7 +17,7 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-type Mode = "login" | "signup" | "verify" | "forgot";
+type Mode = "login" | "signup" | "forgot";
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -26,14 +26,13 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [otp, setOtp] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && user && mode !== "verify") navigate({ to: "/" });
-  }, [user, loading, mode, navigate]);
+    if (!loading && user) navigate({ to: "/" });
+  }, [user, loading, navigate]);
 
   const reset = () => { setError(null); setInfo(null); };
 
@@ -54,21 +53,13 @@ function AuthPage() {
       password,
       options: {
         data: { full_name: name.trim() },
-        emailRedirectTo: typeof window !== "undefined" ? window.location.origin : undefined,
+        emailRedirectTo: typeof window !== "undefined" ? `${window.location.origin}/auth` : undefined,
       },
     });
     setBusy(false);
     if (error) { setError(error.message); return; }
-    setInfo("We sent a 6-digit code to your email.");
-    setMode("verify");
-  }
-
-  async function handleVerify(e: React.FormEvent) {
-    e.preventDefault(); reset(); setBusy(true);
-    const { error } = await supabase.auth.verifyOtp({ email: email.trim(), token: otp.trim(), type: "email" });
-    setBusy(false);
-    if (error) setError(error.message);
-    else navigate({ to: "/" });
+    setInfo(`We sent a verification link to ${email.trim()}. Click the link in your inbox to confirm your account, then sign in.`);
+    setMode("login");
   }
 
   async function handleForgot(e: React.FormEvent) {
@@ -79,14 +70,6 @@ function AuthPage() {
     setBusy(false);
     if (error) setError(error.message);
     else setInfo("Check your email for a password reset link.");
-  }
-
-  async function resendOtp() {
-    reset(); setBusy(true);
-    const { error } = await supabase.auth.resend({ type: "signup", email: email.trim() });
-    setBusy(false);
-    if (error) setError(error.message);
-    else setInfo("A new code has been sent.");
   }
 
   return (
