@@ -17,7 +17,7 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-type Mode = "login" | "signup" | "verify" | "forgot";
+type Mode = "login" | "signup" | "forgot";
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -26,14 +26,13 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [otp, setOtp] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && user && mode !== "verify") navigate({ to: "/" });
-  }, [user, loading, mode, navigate]);
+    if (!loading && user) navigate({ to: "/" });
+  }, [user, loading, navigate]);
 
   const reset = () => { setError(null); setInfo(null); };
 
@@ -54,21 +53,13 @@ function AuthPage() {
       password,
       options: {
         data: { full_name: name.trim() },
-        emailRedirectTo: typeof window !== "undefined" ? window.location.origin : undefined,
+        emailRedirectTo: typeof window !== "undefined" ? `${window.location.origin}/auth` : undefined,
       },
     });
     setBusy(false);
     if (error) { setError(error.message); return; }
-    setInfo("We sent a 6-digit code to your email.");
-    setMode("verify");
-  }
-
-  async function handleVerify(e: React.FormEvent) {
-    e.preventDefault(); reset(); setBusy(true);
-    const { error } = await supabase.auth.verifyOtp({ email: email.trim(), token: otp.trim(), type: "email" });
-    setBusy(false);
-    if (error) setError(error.message);
-    else navigate({ to: "/" });
+    setInfo(`We sent a verification link to ${email.trim()}. Click the link in your inbox to confirm your account, then sign in.`);
+    setMode("login");
   }
 
   async function handleForgot(e: React.FormEvent) {
@@ -79,14 +70,6 @@ function AuthPage() {
     setBusy(false);
     if (error) setError(error.message);
     else setInfo("Check your email for a password reset link.");
-  }
-
-  async function resendOtp() {
-    reset(); setBusy(true);
-    const { error } = await supabase.auth.resend({ type: "signup", email: email.trim() });
-    setBusy(false);
-    if (error) setError(error.message);
-    else setInfo("A new code has been sent.");
   }
 
   return (
@@ -108,13 +91,11 @@ function AuthPage() {
             <h1 className="text-2xl font-extrabold tracking-tight">
               {mode === "login" && "Welcome back"}
               {mode === "signup" && "Create your account"}
-              {mode === "verify" && "Verify your email"}
               {mode === "forgot" && "Reset password"}
             </h1>
             <p className="mt-1.5 text-sm text-muted-foreground">
               {mode === "login" && "Sign in to continue your career journey."}
               {mode === "signup" && "Save your assessments and get personalized matches."}
-              {mode === "verify" && `Enter the 6-digit code sent to ${email}.`}
               {mode === "forgot" && "We'll email you a secure link to set a new password."}
             </p>
           </div>
@@ -150,23 +131,6 @@ function AuthPage() {
               <Field icon={<Mail className="h-4 w-4" />} type="email" placeholder="Email" value={email} onChange={setEmail} required />
               <Field icon={<Lock className="h-4 w-4" />} type="password" placeholder="Password (min 8 characters)" value={password} onChange={setPassword} required minLength={8} />
               <SubmitButton busy={busy}>Create account</SubmitButton>
-            </form>
-          )}
-
-          {mode === "verify" && (
-            <form onSubmit={handleVerify} className="mt-5 space-y-3">
-              <input
-                inputMode="numeric"
-                maxLength={6}
-                placeholder="000000"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                className="w-full rounded-2xl border border-border bg-card px-4 py-4 text-center text-2xl font-bold tracking-[0.5em] outline-none focus:border-primary"
-                required
-              />
-              <SubmitButton busy={busy}>Verify email</SubmitButton>
-              <button type="button" onClick={resendOtp} disabled={busy} className="w-full text-xs font-semibold text-primary">Resend code</button>
-              <button type="button" onClick={() => { setMode("signup"); reset(); }} className="w-full text-xs text-muted-foreground">Use a different email</button>
             </form>
           )}
 
