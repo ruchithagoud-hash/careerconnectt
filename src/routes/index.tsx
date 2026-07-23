@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Sparkles, Compass, Rocket, Brain } from "lucide-react";
+import { Sparkles, Compass, Rocket, Brain, LogOut } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -15,16 +17,31 @@ export const Route = createFileRoute("/")({
 });
 
 function Welcome() {
+  const { user } = useAuth();
   return (
     <AppShell>
       <main className="relative flex flex-1 flex-col px-6 pb-8 pt-10">
         <div className="absolute inset-x-0 top-0 -z-0 h-72 bg-gradient-soft" />
         <div className="relative z-10 flex flex-1 flex-col">
-          <div className="flex items-center gap-2">
-            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-brand text-white shadow-glow">
-              <Sparkles className="h-5 w-5" />
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-brand text-white shadow-glow">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <span className="text-base font-bold tracking-tight">CareerConnect</span>
             </div>
-            <span className="text-base font-bold tracking-tight">CareerConnect</span>
+            {user ? (
+              <button
+                onClick={() => supabase.auth.signOut()}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
+              >
+                <LogOut className="h-3.5 w-3.5" /> Sign out
+              </button>
+            ) : (
+              <Link to="/auth" className="rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-primary">
+                Sign in
+              </Link>
+            )}
           </div>
 
           <div className="mt-12 flex flex-1 flex-col items-center justify-center text-center">
