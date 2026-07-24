@@ -2,13 +2,18 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowRight, Sparkles, Target } from "lucide-react";
 import { AppShell, AppHeader } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { loadAssessment, recommendCareers, type Career } from "@/lib/career-data";
 
 export const Route = createFileRoute("/results")({
   head: () => ({
     meta: [{ title: "Your Career Matches · CareerConnect" }],
   }),
-  component: Results,
+  component: () => (
+    <RequireAuth>
+      <Results />
+    </RequireAuth>
+  ),
 });
 
 function Results() {
