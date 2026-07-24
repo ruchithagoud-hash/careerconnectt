@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search, Plus, X } from "lucide-react";
 import { AppShell, AppHeader } from "@/components/AppShell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { Chip } from "@/components/Chip";
 import {
   BRANCHES,
@@ -23,7 +24,11 @@ export const Route = createFileRoute("/assessment")({
   head: () => ({
     meta: [{ title: "Career Assessment · CareerConnect" }],
   }),
-  component: Assessment,
+  component: () => (
+    <RequireAuth>
+      <Assessment />
+    </RequireAuth>
+  ),
 });
 
 const TOTAL = 6;
