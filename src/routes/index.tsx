@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Sparkles, Compass, Rocket, Brain, LogOut } from "lucide-react";
+import { Sparkles, Compass, Rocket, Brain, LogOut, Linkedin } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,55 +20,77 @@ function Welcome() {
   const { user } = useAuth();
   return (
     <AppShell>
-      <main className="relative flex flex-1 flex-col px-6 pb-8 pt-10">
-        <div className="absolute inset-x-0 top-0 -z-0 h-72 bg-gradient-soft" />
+      <main className="relative flex flex-1 flex-col px-6 pb-6 pt-6">
+        <div className="absolute inset-x-0 top-0 -z-0 h-56 bg-gradient-soft" />
         <div className="relative z-10 flex flex-1 flex-col">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-brand text-white shadow-glow">
-                <Sparkles className="h-5 w-5" />
-              </div>
-              <span className="text-base font-bold tracking-tight">CareerConnect</span>
+          <div className="flex items-center gap-2">
+            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-brand text-white shadow-glow">
+              <Sparkles className="h-5 w-5" />
             </div>
-            {user ? (
-              <button
-                onClick={() => supabase.auth.signOut()}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
-              >
-                <LogOut className="h-3.5 w-3.5" /> Sign out
-              </button>
-            ) : (
-              <Link to="/auth" className="rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-primary">
-                Sign in
-              </Link>
-            )}
+            <span className="text-base font-bold tracking-tight">CareerConnect</span>
           </div>
 
-          <div className="mt-12 flex flex-1 flex-col items-center justify-center text-center">
-            <Illustration />
-            <h1 className="mt-8 text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-4xl">
+          <div className="mt-5 flex flex-1 flex-col items-center justify-start text-center">
+            <div className="mt-1">
+              <Illustration />
+            </div>
+            <h1 className="mt-5 text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-4xl">
               Discover the career
               <br />
               <span className="text-gradient-brand">that&apos;s right for you.</span>
             </h1>
-            <p className="mt-3 max-w-sm text-sm text-muted-foreground sm:text-base">
+            <p className="mt-2 max-w-sm text-sm text-muted-foreground sm:text-base">
               Tell us about your skills, projects, and interests. Get personalized career matches in minutes.
             </p>
 
-            <div className="mt-8 grid w-full max-w-sm grid-cols-3 gap-2.5">
+            <div className="mt-5 grid w-full max-w-sm grid-cols-3 gap-2">
               <Feature icon={<Brain className="h-4 w-4" />} label="AI Matched" />
               <Feature icon={<Compass className="h-4 w-4" />} label="Roadmaps" />
               <Feature icon={<Rocket className="h-4 w-4" />} label="Internships" />
             </div>
           </div>
 
+          <div className="mt-5 flex w-full flex-col items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">GET STARTED</span>
+            {user ? (
+              <button
+                onClick={() => supabase.auth.signOut()}
+                className="inline-flex h-12 w-full max-w-sm items-center justify-center gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
+              >
+                <LogOut className="h-4 w-4" /> Sign out
+              </button>
+            ) : (
+              <>
+                <Link
+                  to="/auth"
+                  className="inline-flex h-12 w-full max-w-sm items-center justify-center rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  to="/auth"
+                  className="inline-flex h-12 w-full max-w-sm items-center justify-center rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
+                >
+                  Create account
+                </Link>
+                <button
+                  type="button"
+                  disabled
+                  className="inline-flex h-12 w-full max-w-sm cursor-not-allowed items-center justify-center gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-muted-foreground opacity-60"
+                >
+                  <Linkedin className="h-4 w-4" /> Continue with LinkedIn
+                </button>
+              </>
+            )}
+          </div>
+
           <Link
             to="/assessment"
-            className="mt-10 inline-flex h-14 w-full items-center justify-center rounded-2xl bg-gradient-brand text-base font-semibold text-white shadow-glow transition-transform active:scale-[0.98]"
+            className="mt-4 inline-flex h-14 w-full items-center justify-center rounded-2xl bg-gradient-brand text-base font-semibold text-white shadow-glow transition-transform active:scale-[0.98]"
           >
             Start Career Assessment
           </Link>
-          <p className="mt-3 text-center text-xs text-muted-foreground">
+          <p className="mt-2 text-center text-xs text-muted-foreground">
             Takes ~3 minutes · 7 quick steps
           </p>
         </div>
@@ -88,7 +110,7 @@ function Feature({ icon, label }: { icon: React.ReactNode; label: string }) {
 
 function Illustration() {
   return (
-    <div className="relative h-56 w-56">
+    <div className="relative h-[12.5rem] w-[12.5rem]">
       <div className="absolute inset-0 rounded-full bg-gradient-brand opacity-20 blur-3xl" />
       <svg viewBox="0 0 240 240" className="relative h-full w-full">
         <defs>
