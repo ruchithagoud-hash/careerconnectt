@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Sparkles, Mail, Lock, ArrowLeft } from "lucide-react";
+import { Sparkles, Mail, Lock, ArrowLeft, Linkedin } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -19,6 +19,20 @@ export const Route = createFileRoute("/auth")({
 
 type Mode = "login" | "signup" | "forgot";
 
+function getRedirectTarget(): string {
+  if (typeof window === "undefined") return "/";
+  const params = new URLSearchParams(window.location.search);
+  const r = params.get("redirect");
+  if (!r) return "/";
+  try {
+    const url = new URL(r, window.location.origin);
+    if (url.origin !== window.location.origin) return "/";
+    return url.pathname + url.search + url.hash;
+  } catch {
+    return r.startsWith("/") ? r : "/";
+  }
+}
+
 function AuthPage() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
@@ -31,7 +45,10 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/" });
+    if (!loading && user) {
+      const to = getRedirectTarget();
+      navigate({ to, replace: true });
+    }
   }, [user, loading, navigate]);
 
   const reset = () => { setError(null); setInfo(null); };
@@ -41,19 +58,22 @@ function AuthPage() {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setBusy(false);
     if (error) setError(error.message);
-    else navigate({ to: "/" });
+    else navigate({ to: getRedirectTarget(), replace: true });
   }
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault(); reset();
     if (password.length < 8) { setError("Password must be at least 8 characters."); return; }
     setBusy(true);
+    const redirect = typeof window !== "undefined"
+      ? `${window.location.origin}/auth?redirect=${encodeURIComponent(getRedirectTarget())}`
+      : undefined;
     const { error } = await supabase.auth.signUp({
       email: email.trim(),
       password,
       options: {
         data: { full_name: name.trim() },
-        emailRedirectTo: typeof window !== "undefined" ? `${window.location.origin}/auth` : undefined,
+        emailRedirectTo: redirect,
       },
     });
     setBusy(false);
@@ -70,6 +90,22 @@ function AuthPage() {
     setBusy(false);
     if (error) setError(error.message);
     else setInfo("Check your email for a password reset link.");
+  }
+
+  async function handleLinkedIn() {
+    reset(); setBusy(true);
+    const redirect = typeof window !== "undefined"
+      ? `${window.location.origin}/auth?redirect=${encodeURIComponent(getRedirectTarget())}`
+      : undefined;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "linkedin_oidc",
+      options: { redirectTo: redirect },
+    });
+    if (error) {
+      setBusy(false);
+      setError(error.message);
+    }
+    // On success the browser is redirected to LinkedIn.
   }
 
   return (
@@ -140,6 +176,24 @@ function AuthPage() {
               <SubmitButton busy={busy}>Send reset link</SubmitButton>
               <button type="button" onClick={() => { setMode("login"); reset(); }} className="w-full text-xs font-semibold text-primary">Back to sign in</button>
             </form>
+          )}
+
+          {mode !== "forgot" && (
+            <>
+              <div className="mt-5 flex items-center gap-3">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">or</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+              <button
+                type="button"
+                onClick={handleLinkedIn}
+                disabled={busy}
+                className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary disabled:opacity-60"
+              >
+                <Linkedin className="h-4 w-4 text-[#0A66C2]" /> Continue with LinkedIn
+              </button>
+            </>
           )}
         </div>
       </main>
