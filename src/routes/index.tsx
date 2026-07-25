@@ -106,6 +106,11 @@ function Welcome() {
           <p className="mt-1.5 text-center text-[11px] text-muted-foreground">
             Takes ~3 minutes · 7 quick steps
           </p>
+          <footer className="mt-3 text-center text-[11px] text-muted-foreground">
+            <Link to="/privacy" className="font-semibold hover:text-foreground hover:underline">
+              Privacy Policy
+            </Link>
+          </footer>
         </div>
       </main>
     </AppShell>
