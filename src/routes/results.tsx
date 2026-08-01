@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Sparkles, Target } from "lucide-react";
 import { AppShell, AppHeader } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
-import { loadAssessment, recommendCareers, type Career } from "@/lib/career-data";
+import { recommendCareers, type Career } from "@/lib/career-data";
+import { loadProfile, profileToAssessment } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/results")({
   head: () => ({
@@ -20,7 +21,7 @@ function Results() {
   const [list, setList] = useState<(Career & { score: number; matchReasons: string[] })[]>([]);
 
   useEffect(() => {
-    const data = loadAssessment();
+    const data = profileToAssessment(loadProfile());
     const recs = recommendCareers(data);
     const ranked = recs.filter((r) => r.score > 0);
     setList(ranked.length ? ranked : recs);
@@ -30,7 +31,7 @@ function Results() {
 
   return (
     <AppShell>
-      <AppHeader title="Your Matches" back="/assessment" />
+      <AppHeader title="Your Matches" back="/profile" />
       <main className="flex-1 overflow-y-auto px-5 py-6">
         <div className="mb-6">
           <p className="text-xs font-bold uppercase tracking-wider text-primary">
