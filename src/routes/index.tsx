@@ -1,8 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Sparkles, Compass, Rocket, Brain, LogOut, Linkedin } from "lucide-react";
+import { useState } from "react";
+import { Sparkles, Compass, Rocket, Brain, Linkedin, Search, UserCog } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { ProfileMenu } from "@/components/ProfileMenu";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { isProfileComplete, loadProfile, missingRequired } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -20,13 +23,31 @@ function Welcome() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const startAssessment = () => {
-    if (user) navigate({ to: "/assessment" });
-    else navigate({ to: `/auth?redirect=${encodeURIComponent("/assessment")}` });
+  const [notice, setNotice] = useState("");
+
+  const completeProfile = () => {
+    if (user) navigate({ to: "/profile" });
+    else navigate({ to: `/auth?redirect=${encodeURIComponent("/profile")}` });
+  };
+
+  const searchCareer = () => {
+    if (!user) {
+      navigate({ to: `/auth?redirect=${encodeURIComponent("/profile")}` });
+      return;
+    }
+    const profile = loadProfile();
+    if (!isProfileComplete(profile)) {
+      setNotice(
+        `Almost there! Please add your ${missingRequired(profile).join(", ")} in your profile before we search careers.`,
+      );
+      return;
+    }
+    setNotice("");
+    navigate({ to: "/results" });
   };
 
   const handleLinkedIn = async () => {
-    const redirect = `${window.location.origin}/auth?redirect=${encodeURIComponent("/assessment")}`;
+    const redirect = `${window.location.origin}/auth?redirect=${encodeURIComponent("/profile")}`;
     await supabase.auth.signInWithOAuth({
       provider: "linkedin_oidc",
       options: { redirectTo: redirect },
@@ -38,11 +59,14 @@ function Welcome() {
       <main className="relative flex flex-1 flex-col px-5 pb-4 pt-4 sm:px-6 sm:pb-5 sm:pt-5">
         <div className="absolute inset-x-0 top-0 -z-0 h-32 sm:h-40 bg-gradient-soft" />
         <div className="relative z-10 flex flex-1 flex-col">
-          <div className="flex items-center gap-2">
-            <div className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-brand text-white shadow-glow">
-              <Sparkles className="h-4 w-4" />
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-brand text-white shadow-glow">
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <span className="text-sm font-bold tracking-tight">CareerConnect</span>
             </div>
-            <span className="text-sm font-bold tracking-tight">CareerConnect</span>
+            {user && <ProfileMenu email={user.email} />}
           </div>
 
           <div className="mt-2 flex flex-1 flex-col items-center justify-start text-center">
@@ -66,12 +90,20 @@ function Welcome() {
           <div className="mt-3 flex w-full flex-col items-center gap-1.5">
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">GET STARTED</span>
             {user ? (
-              <button
-                onClick={() => supabase.auth.signOut()}
-                className="inline-flex h-11 w-full max-w-sm items-center justify-center gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
-              >
-                <LogOut className="h-4 w-4" /> Sign out
-              </button>
+              <>
+                <button
+                  onClick={completeProfile}
+                  className="inline-flex h-11 w-full max-w-sm items-center justify-center gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
+                >
+                  <UserCog className="h-4 w-4 text-primary" /> Complete My Profile
+                </button>
+                <button
+                  onClick={searchCareer}
+                  className="inline-flex h-12 w-full max-w-sm items-center justify-center gap-2 rounded-2xl bg-gradient-brand text-sm font-semibold text-white shadow-glow transition-transform active:scale-[0.98]"
+                >
+                  <Search className="h-4 w-4" /> Search My Career
+                </button>
+              </>
             ) : (
               <>
                 <Link
@@ -95,17 +127,13 @@ function Welcome() {
                 </button>
               </>
             )}
+            {notice && (
+              <p className="mt-1 max-w-sm rounded-2xl bg-gradient-soft p-3 text-center text-[11px] font-medium text-primary">
+                {notice}
+              </p>
+            )}
           </div>
 
-          <button
-            onClick={startAssessment}
-            className="mt-3 inline-flex h-12 w-full items-center justify-center rounded-2xl bg-gradient-brand text-sm font-semibold text-white shadow-glow transition-transform active:scale-[0.98] sm:h-13 sm:text-base"
-          >
-            Start Career Assessment
-          </button>
-          <p className="mt-1.5 text-center text-[11px] text-muted-foreground">
-            Takes ~3 minutes · 7 quick steps
-          </p>
           <footer className="mt-3 text-center text-[11px] text-muted-foreground">
             <Link to="/privacy" className="font-semibold hover:text-foreground hover:underline">
               Privacy Policy

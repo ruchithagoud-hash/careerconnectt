@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AssessmentRouteImport } from './routes/assessment'
@@ -25,6 +26,11 @@ const ResultsRoute = ResultsRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/assessment': typeof AssessmentRoute
   '/auth': typeof AuthRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/results': typeof ResultsRoute
   '/career/$id': typeof CareerIdRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/assessment': typeof AssessmentRoute
   '/auth': typeof AuthRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/results': typeof ResultsRoute
   '/career/$id': typeof CareerIdRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/assessment': typeof AssessmentRoute
   '/auth': typeof AuthRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/results': typeof ResultsRoute
   '/career/$id': typeof CareerIdRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/assessment'
     | '/auth'
     | '/privacy'
+    | '/profile'
     | '/reset-password'
     | '/results'
     | '/career/$id'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/assessment'
     | '/auth'
     | '/privacy'
+    | '/profile'
     | '/reset-password'
     | '/results'
     | '/career/$id'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/assessment'
     | '/auth'
     | '/privacy'
+    | '/profile'
     | '/reset-password'
     | '/results'
     | '/career/$id'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   AssessmentRoute: typeof AssessmentRoute
   AuthRoute: typeof AuthRoute
   PrivacyRoute: typeof PrivacyRoute
+  ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResultsRoute: typeof ResultsRoute
   CareerIdRoute: typeof CareerIdRoute
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AssessmentRoute: AssessmentRoute,
   AuthRoute: AuthRoute,
   PrivacyRoute: PrivacyRoute,
+  ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ResultsRoute: ResultsRoute,
   CareerIdRoute: CareerIdRoute,
@@ -187,13 +208,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
