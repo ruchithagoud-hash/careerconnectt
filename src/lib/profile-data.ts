@@ -1,29 +1,48 @@
 import { DEFAULT_ASSESSMENT, type AssessmentData } from "./career-data";
 
+export type ProjectEntry = {
+  id: string;
+  title: string;
+  description: string;
+  technologies: string;
+  githubUrl: string;
+  demoUrl: string;
+};
+
 export type ProfileData = {
   // Personal information
   fullName: string;
   email: string;
   phone: string;
   location: string;
+  dob: string;
+  gender: string;
   // Education
   qualification: string;
   branch: string;
   year: string;
   cgpa: string;
   college: string;
+  university: string;
+  degree: string;
+  graduationYear: string;
   // Skills & experience
   skills: string[];
   softSkills: string[];
   projects: string[];
+  projectEntries: ProjectEntry[];
   certifications: string[];
   internships: string[];
   experienceExtras: string[];
   interests: string[];
   // Links & resume
   resumeName: string;
+  resumeDataUrl: string;
   linkedinUrl: string;
   githubUrl: string;
+  portfolioUrl: string;
+  leetcodeUrl: string;
+  hackerrankUrl: string;
 };
 
 export const DEFAULT_PROFILE: ProfileData = {
@@ -31,22 +50,33 @@ export const DEFAULT_PROFILE: ProfileData = {
   email: "",
   phone: "",
   location: "",
+  dob: "",
+  gender: "",
   qualification: "",
   branch: "",
   year: "",
   cgpa: "",
   college: "",
+  university: "",
+  degree: "",
+  graduationYear: "",
   skills: [],
   softSkills: [],
   projects: [],
+  projectEntries: [],
   certifications: [],
   internships: [],
   experienceExtras: [],
   interests: [],
   resumeName: "",
+  resumeDataUrl: "",
   linkedinUrl: "",
   githubUrl: "",
+  portfolioUrl: "",
+  leetcodeUrl: "",
+  hackerrankUrl: "",
 };
+
 
 const STORAGE_KEY = "careerconnect.profile";
 
