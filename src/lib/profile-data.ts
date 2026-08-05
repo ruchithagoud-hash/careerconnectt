@@ -40,9 +40,6 @@ export type ProfileData = {
   resumeDataUrl: string;
   linkedinUrl: string;
   githubUrl: string;
-  portfolioUrl: string;
-  leetcodeUrl: string;
-  hackerrankUrl: string;
 };
 
 export const DEFAULT_PROFILE: ProfileData = {
@@ -72,9 +69,6 @@ export const DEFAULT_PROFILE: ProfileData = {
   resumeDataUrl: "",
   linkedinUrl: "",
   githubUrl: "",
-  portfolioUrl: "",
-  leetcodeUrl: "",
-  hackerrankUrl: "",
 };
 
 
@@ -114,7 +108,6 @@ const OPTIONAL_SECTIONS: (keyof ProfileData)[] = [
   "college",
   "cgpa",
   "softSkills",
-  "projects",
   "certifications",
   "internships",
   "experienceExtras",
