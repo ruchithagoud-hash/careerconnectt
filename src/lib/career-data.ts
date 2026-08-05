@@ -316,14 +316,6 @@ export const CERTIFICATION_GROUPS: Record<string, string[]> = {
   "Business": ["Agile Fundamentals", "Scrum Fundamentals", "Business Analysis Foundation"],
 };
 
-export const PROJECT_GROUPS: Record<string, string[]> = {
-  "AI": ["AI Chatbot", "Image Classification", "Face Recognition", "Fake News Detection", "Crop Disease Detection"],
-  "Data Analytics": ["HR Analytics Dashboard", "Sales Dashboard", "Customer Churn Analysis", "Restaurant Sentiment Analysis", "Financial Dashboard"],
-  "Software": ["Employee Management System", "Library Management System", "Banking System", "E-Commerce Website"],
-  "Cloud": ["Docker Deployment", "CI/CD Pipeline", "Kubernetes Cluster"],
-  "Web": ["Portfolio Website", "Social Media Application", "Food Delivery App"],
-};
-
 export const INTERESTS = [
   "Artificial Intelligence", "Machine Learning", "Data Science", "Business Analytics",
   "Software Development", "Full Stack Development", "DevOps", "Cloud Computing",
@@ -398,22 +390,4 @@ export function recommendCareers(data: AssessmentData): (Career & { score: numbe
     return { ...c, score, matchReasons: reasons };
   })
     .sort((a, b) => b.score - a.score);
-}
-
-const STORAGE_KEY = "careerconnect.assessment";
-
-export function saveAssessment(data: AssessmentData) {
-  if (typeof window !== "undefined") {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
-}
-export function loadAssessment(): AssessmentData {
-  if (typeof window === "undefined") return DEFAULT_ASSESSMENT;
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_ASSESSMENT;
-    return { ...DEFAULT_ASSESSMENT, ...JSON.parse(raw) };
-  } catch {
-    return DEFAULT_ASSESSMENT;
-  }
 }
