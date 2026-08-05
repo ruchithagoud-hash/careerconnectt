@@ -185,7 +185,7 @@ function Profile() {
   return (
     <AppShell>
       <AppHeader title="My Profile" back="/" step={step} total={STEPS.length} />
-      <main className="flex-1 overflow-y-auto px-5 py-5">
+      <main className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5">
         {/* Completion */}
         <section className="rounded-3xl border border-border/60 bg-card p-4 shadow-soft">
           <div className="flex items-baseline justify-between">
@@ -206,7 +206,7 @@ function Profile() {
         </section>
 
         {/* Step tabs */}
-        <div className="mt-4 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1">
+        <div className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {STEPS.map((label, i) => (
             <button
               key={label}
@@ -404,18 +404,19 @@ function Profile() {
         )}
       </main>
 
-      <footer className="sticky bottom-0 border-t border-border/60 bg-background/95 px-5 py-4 backdrop-blur">
-        <div className="flex items-center gap-3">
+      <footer className="sticky bottom-0 border-t border-border/60 bg-background/95 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur sm:px-6 sm:py-4">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={prev}
             disabled={step === 1}
-            className="inline-flex h-12 items-center justify-center gap-1 rounded-2xl border border-border bg-card px-4 text-sm font-semibold text-foreground transition hover:bg-secondary disabled:opacity-40"
+            aria-label="Previous step"
+            className="inline-flex h-12 shrink-0 items-center justify-center gap-1 rounded-2xl border border-border bg-card px-3 text-sm font-semibold text-foreground transition hover:bg-secondary disabled:opacity-40 sm:px-4"
           >
-            <ChevronLeft className="h-4 w-4" /> Previous
+            <ChevronLeft className="h-4 w-4" /> <span className="hidden sm:inline">Previous</span>
           </button>
           <button
             onClick={save}
-            className="inline-flex h-12 items-center justify-center gap-1.5 rounded-2xl border border-border bg-card px-4 text-sm font-semibold text-foreground transition hover:bg-secondary"
+            className="inline-flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-2xl border border-border bg-card px-3 text-sm font-semibold text-foreground transition hover:bg-secondary sm:px-4"
           >
             {saved ? <Check className="h-4 w-4 text-primary" /> : null}
             {saved ? "Saved" : "Save"}
@@ -424,18 +425,18 @@ function Profile() {
             <button
               onClick={searchCareer}
               className={cn(
-                "inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-2xl text-sm font-semibold text-white transition-all active:scale-[0.98]",
+                "inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-2xl px-3 text-sm font-semibold text-white transition-all active:scale-[0.98]",
                 missing.length ? "bg-muted text-muted-foreground" : "bg-gradient-brand shadow-glow",
               )}
             >
-              <Search className="h-4 w-4" /> Search My Career
+              <Search className="h-4 w-4 shrink-0" /> <span className="truncate">Search My Career</span>
             </button>
           ) : (
             <button
               onClick={next}
-              className="inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-2xl bg-gradient-brand text-sm font-semibold text-white shadow-glow transition-all active:scale-[0.98]"
+              className="inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-2xl bg-gradient-brand px-3 text-sm font-semibold text-white shadow-glow transition-all active:scale-[0.98]"
             >
-              Save &amp; Continue <ChevronRight className="h-4 w-4" />
+              <span className="truncate">Save &amp; Continue</span> <ChevronRight className="h-4 w-4" />
             </button>
           )}
         </div>
@@ -576,7 +577,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="mt-4 rounded-3xl border border-border/60 bg-card p-4 shadow-soft">
+    <section className="mt-4 rounded-3xl border border-border/60 bg-card p-4 shadow-soft sm:p-5">
       <div className="mb-3 flex items-baseline justify-between gap-2">
         <h2 className="text-sm font-bold tracking-tight text-foreground">{title}</h2>
         {subtitle && <span className="text-[11px] font-medium text-muted-foreground">{subtitle}</span>}

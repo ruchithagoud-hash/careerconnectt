@@ -50,7 +50,7 @@ function ResetPasswordPage() {
 
   return (
     <AppShell>
-      <main className="relative flex flex-1 flex-col px-6 pb-8 pt-8">
+      <main className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-5 pb-8 pt-8 sm:px-6">
         <div className="absolute inset-x-0 top-0 -z-0 h-56 bg-gradient-soft" />
         <div className="relative z-10 flex flex-1 flex-col">
           <Link to="/auth" className="mb-6 inline-flex w-fit items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground">

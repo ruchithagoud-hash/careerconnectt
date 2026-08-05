@@ -30,7 +30,7 @@ function SettingsPage() {
   return (
     <AppShell>
       <AppHeader title="Settings" back="/" />
-      <main className="flex-1 space-y-4 px-5 py-5">
+      <main className="mx-auto w-full max-w-xl flex-1 space-y-4 px-4 py-5 sm:px-6">
         <section className="rounded-2xl border border-border/60 bg-card p-4 shadow-soft">
           <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Account</p>
           <p className="mt-1 truncate text-sm font-semibold text-foreground">{user?.email}</p>
