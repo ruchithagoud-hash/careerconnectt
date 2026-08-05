@@ -23,7 +23,6 @@ import {
   EXPERIENCE_EXTRAS,
   INTERESTS,
   INTERNSHIPS,
-  PROJECT_GROUPS,
   QUALIFICATIONS,
   SKILL_GROUPS,
   YEARS,
@@ -297,15 +296,10 @@ function Profile() {
         )}
 
         {step === 4 && (
-          <>
-            <Section title="Project Areas" subtitle={`${data.projects.length} selected`}>
-              <GroupedChips groups={PROJECT_GROUPS} selected={data.projects} onToggle={(v) => toggle("projects", v)} />
-            </Section>
-            <ProjectsEditor
-              entries={data.projectEntries}
-              onChange={(entries) => update("projectEntries", entries)}
-            />
-          </>
+          <ProjectsEditor
+            entries={data.projectEntries}
+            onChange={(entries) => update("projectEntries", entries)}
+          />
         )}
 
         {step === 5 && (
@@ -393,15 +387,6 @@ function Profile() {
                 <Linkedin className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#0A66C2]" />
                 <Input value={data.linkedinUrl} onChange={(v) => update("linkedinUrl", v)} placeholder="https://linkedin.com/in/username" className="pl-10" />
               </div>
-            </Field>
-            <Field label="Portfolio URL" hint="Optional">
-              <Input value={data.portfolioUrl} onChange={(v) => update("portfolioUrl", v)} placeholder="https://yourname.dev" />
-            </Field>
-            <Field label="LeetCode URL" hint="Optional">
-              <Input value={data.leetcodeUrl} onChange={(v) => update("leetcodeUrl", v)} placeholder="https://leetcode.com/username" />
-            </Field>
-            <Field label="HackerRank URL" hint="Optional">
-              <Input value={data.hackerrankUrl} onChange={(v) => update("hackerrankUrl", v)} placeholder="https://hackerrank.com/username" />
             </Field>
           </Section>
         )}
