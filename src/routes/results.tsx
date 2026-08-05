@@ -78,7 +78,7 @@ function Results() {
           </Link>
         )}
 
-        <div className="space-y-3 pb-6">
+        <div className="grid grid-cols-1 gap-3 pb-6 md:grid-cols-2">
           {list.slice(1).map((c) => (
             <CareerCard key={c.id} career={c} />
           ))}
