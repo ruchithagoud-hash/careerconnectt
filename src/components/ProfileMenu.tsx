@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { LogOut, Pencil, User } from "lucide-react";
+import { LogOut, Settings, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export function ProfileMenu({ email }: { email?: string | null }) {
@@ -45,11 +45,11 @@ export function ProfileMenu({ email }: { email?: string | null }) {
             <User className="h-4 w-4 text-primary" /> My Profile
           </Link>
           <Link
-            to="/profile"
+            to="/settings"
             onClick={() => setOpen(false)}
             className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-foreground transition hover:bg-secondary"
           >
-            <Pencil className="h-4 w-4 text-primary" /> Edit Profile
+            <Settings className="h-4 w-4 text-primary" /> Settings
           </Link>
           <button
             type="button"
