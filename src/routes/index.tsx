@@ -57,7 +57,7 @@ function Welcome() {
   return (
     <AppShell>
       <main className="relative flex flex-1 flex-col px-4 pb-4 pt-4 sm:px-6 sm:pb-5 sm:pt-5">
-        <div className="absolute inset-x-0 top-0 -z-0 h-32 sm:h-40 bg-gradient-soft" />
+        <div className="absolute inset-x-0 top-0 -z-0 h-32 bg-gradient-soft sm:h-40 lg:h-52" />
         <div className="relative z-10 flex flex-1 flex-col">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
@@ -69,9 +69,9 @@ function Welcome() {
             {user && <ProfileMenu email={user.email} />}
           </div>
 
-          <div className="mt-2 flex flex-1 flex-col items-center justify-start text-center">
+          <div className="mt-2 flex flex-1 flex-col items-center justify-start text-center lg:justify-center">
             <Illustration />
-            <h1 className="mt-2 text-2xl font-extrabold leading-tight tracking-tight text-foreground sm:text-3xl">
+            <h1 className="mt-2 text-2xl font-extrabold leading-tight tracking-tight text-foreground sm:text-3xl lg:text-4xl">
               Discover the career
               <br />
               <span className="text-gradient-brand">that&apos;s right for you.</span>
@@ -80,26 +80,26 @@ function Welcome() {
               Tell us about your skills, projects, and interests. Get personalized career matches in minutes.
             </p>
 
-            <div className="mt-3 grid w-full max-w-sm grid-cols-3 gap-2">
+            <div className="mt-3 grid w-full max-w-sm grid-cols-3 gap-2 sm:max-w-md">
               <Feature icon={<Brain className="h-4 w-4" />} label="AI Matched" />
               <Feature icon={<Compass className="h-4 w-4" />} label="Roadmaps" />
               <Feature icon={<Rocket className="h-4 w-4" />} label="Internships" />
             </div>
           </div>
 
-          <div className="mt-3 flex w-full flex-col items-center gap-1.5">
+          <div className="mt-4 flex w-full flex-col items-center gap-2 lg:mt-6">
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">GET STARTED</span>
             {user ? (
               <>
                 <button
                   onClick={completeProfile}
-                  className="inline-flex h-11 w-full max-w-sm items-center justify-center gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
+                  className="inline-flex h-11 w-full max-w-sm items-center justify-center sm:max-w-md gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
                 >
                   <UserCog className="h-4 w-4 text-primary" /> Complete My Profile
                 </button>
                 <button
                   onClick={searchCareer}
-                  className="inline-flex h-12 w-full max-w-sm items-center justify-center gap-2 rounded-2xl bg-gradient-brand text-sm font-semibold text-white shadow-glow transition-transform active:scale-[0.98]"
+                  className="inline-flex h-12 w-full max-w-sm items-center justify-center sm:max-w-md gap-2 rounded-2xl bg-gradient-brand text-sm font-semibold text-white shadow-glow transition-transform active:scale-[0.98]"
                 >
                   <Search className="h-4 w-4" /> Search My Career
                 </button>
@@ -108,27 +108,27 @@ function Welcome() {
               <>
                 <Link
                   to="/auth"
-                  className="inline-flex h-11 w-full max-w-sm items-center justify-center rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
+                  className="inline-flex h-11 w-full max-w-sm items-center justify-center sm:max-w-md rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
                 >
                   Sign in
                 </Link>
                 <Link
                   to="/auth"
-                  className="inline-flex h-11 w-full max-w-sm items-center justify-center rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
+                  className="inline-flex h-11 w-full max-w-sm items-center justify-center sm:max-w-md rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
                 >
                   Create account
                 </Link>
                 <button
                   type="button"
                   onClick={handleLinkedIn}
-                  className="inline-flex h-11 w-full max-w-sm items-center justify-center gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
+                  className="inline-flex h-11 w-full max-w-sm items-center justify-center sm:max-w-md gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
                 >
                   <Linkedin className="h-4 w-4 text-[#0A66C2]" /> Continue with LinkedIn
                 </button>
               </>
             )}
             {notice && (
-              <p className="mt-1 max-w-sm rounded-2xl bg-gradient-soft p-3 text-center text-[11px] font-medium text-primary">
+              <p className="mt-1 max-w-md rounded-2xl bg-gradient-soft p-3 text-center text-[11px] font-medium text-primary">
                 {notice}
               </p>
             )}
@@ -156,7 +156,7 @@ function Feature({ icon, label }: { icon: React.ReactNode; label: string }) {
 
 function Illustration() {
   return (
-    <div className="relative h-28 w-28 sm:h-36 sm:w-36">
+    <div className="relative h-28 w-28 sm:h-36 sm:w-36 lg:h-40 lg:w-40">
       <div className="absolute inset-0 rounded-full bg-gradient-brand opacity-20 blur-3xl" />
       <svg viewBox="0 0 240 240" className="relative h-full w-full">
         <defs>
