@@ -32,7 +32,7 @@ function Results() {
   return (
     <AppShell>
       <AppHeader title="Your Matches" back="/profile" />
-      <main className="flex-1 overflow-y-auto px-5 py-6">
+      <main className="flex-1 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
         <div className="mb-6">
           <p className="text-xs font-bold uppercase tracking-wider text-primary">
             <Sparkles className="mr-1 inline h-3.5 w-3.5" />

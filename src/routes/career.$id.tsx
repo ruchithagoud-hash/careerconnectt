@@ -43,7 +43,7 @@ function CareerDetail() {
       <AppHeader title={career.name} back="/results" />
       <main className="flex-1 overflow-y-auto pb-8">
         {/* Hero */}
-        <div className="relative overflow-hidden bg-gradient-brand px-5 pb-7 pt-6 text-white">
+        <div className="relative overflow-hidden bg-gradient-brand px-4 pb-7 pt-6 text-white sm:px-6">
           <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
           <div className="relative flex items-start gap-3">
             <div className="grid h-14 w-14 place-items-center rounded-2xl bg-white/15 text-3xl backdrop-blur">
@@ -54,13 +54,13 @@ function CareerDetail() {
               <p className="mt-1 text-sm text-white/90">{career.tagline}</p>
             </div>
           </div>
-          <div className="relative mt-5 grid grid-cols-2 gap-2.5">
+          <div className="relative mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
             <Stat icon={<Wallet className="h-4 w-4" />} label="Avg. Salary" value={career.salary} />
             <Stat icon={<MapPin className="h-4 w-4" />} label="Hiring" value={`${career.companies.length}+ companies`} />
           </div>
         </div>
 
-        <div className="space-y-6 px-5 py-6">
+        <div className="space-y-6 px-4 py-5 sm:px-6 sm:py-6">
           <Section icon={<BookOpen className="h-4 w-4" />} title="Overview">
             <p className="text-sm leading-relaxed text-muted-foreground">{career.description}</p>
           </Section>
@@ -116,7 +116,7 @@ function CareerDetail() {
           </Section>
 
           <Section icon={<Building2 className="h-4 w-4" />} title="Top Hiring Companies">
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {career.companies.map((c) => (
                 <div key={c} className="rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-semibold text-foreground shadow-soft">
                   {c}
@@ -125,7 +125,7 @@ function CareerDetail() {
             </div>
           </Section>
 
-          <div className="grid grid-cols-2 gap-3 pt-2">
+          <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
             <button className="h-12 rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary">
               Learning Path
             </button>
