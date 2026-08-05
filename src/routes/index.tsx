@@ -56,7 +56,7 @@ function Welcome() {
 
   return (
     <AppShell>
-      <main className="relative flex flex-1 flex-col px-5 pb-4 pt-4 sm:px-6 sm:pb-5 sm:pt-5">
+      <main className="relative flex flex-1 flex-col px-4 pb-4 pt-4 sm:px-6 sm:pb-5 sm:pt-5">
         <div className="absolute inset-x-0 top-0 -z-0 h-32 sm:h-40 bg-gradient-soft" />
         <div className="relative z-10 flex flex-1 flex-col">
           <div className="flex items-center justify-between gap-2">
