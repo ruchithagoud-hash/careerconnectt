@@ -96,27 +96,12 @@ function Welcome() {
                 </button>
               </>
             ) : (
-              <>
-                <Link
-                  to="/auth"
-                  className="inline-flex h-11 w-full max-w-sm items-center justify-center sm:max-w-md rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  to="/auth"
-                  className="inline-flex h-11 w-full max-w-sm items-center justify-center sm:max-w-md rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
-                >
-                  Create account
-                </Link>
-                <button
-                  type="button"
-                  onClick={handleLinkedIn}
-                  className="inline-flex h-11 w-full max-w-sm items-center justify-center sm:max-w-md gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
-                >
-                  <Linkedin className="h-4 w-4 text-[#0A66C2]" /> Continue with LinkedIn
-                </button>
-              </>
+              <Link
+                to="/auth"
+                className="inline-flex h-12 w-full max-w-sm items-center justify-center sm:max-w-md rounded-2xl bg-gradient-brand text-sm font-semibold text-white shadow-glow transition-transform active:scale-[0.98]"
+              >
+                Get Started
+              </Link>
             )}
             {notice && (
               <p className="mt-1 max-w-md rounded-2xl bg-gradient-soft p-3 text-center text-[11px] font-medium text-primary">
