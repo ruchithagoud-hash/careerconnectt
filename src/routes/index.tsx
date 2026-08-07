@@ -1,10 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Sparkles, Compass, Rocket, Brain, Linkedin, Search, UserCog } from "lucide-react";
+import { Sparkles, Compass, Rocket, Brain, Search, UserCog } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { ProfileMenu } from "@/components/ProfileMenu";
 import { useAuth } from "@/hooks/use-auth";
-import { supabase } from "@/integrations/supabase/client";
 import { isProfileComplete, loadProfile, missingRequired } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/")({
@@ -44,14 +43,6 @@ function Welcome() {
     }
     setNotice("");
     navigate({ to: "/results" });
-  };
-
-  const handleLinkedIn = async () => {
-    const redirect = `${window.location.origin}/auth?redirect=${encodeURIComponent("/profile")}`;
-    await supabase.auth.signInWithOAuth({
-      provider: "linkedin_oidc",
-      options: { redirectTo: redirect },
-    });
   };
 
   return (
@@ -105,27 +96,12 @@ function Welcome() {
                 </button>
               </>
             ) : (
-              <>
-                <Link
-                  to="/auth"
-                  className="inline-flex h-11 w-full max-w-sm items-center justify-center sm:max-w-md rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  to="/auth"
-                  className="inline-flex h-11 w-full max-w-sm items-center justify-center sm:max-w-md rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
-                >
-                  Create account
-                </Link>
-                <button
-                  type="button"
-                  onClick={handleLinkedIn}
-                  className="inline-flex h-11 w-full max-w-sm items-center justify-center sm:max-w-md gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary"
-                >
-                  <Linkedin className="h-4 w-4 text-[#0A66C2]" /> Continue with LinkedIn
-                </button>
-              </>
+              <Link
+                to="/auth"
+                className="inline-flex h-12 w-full max-w-sm items-center justify-center sm:max-w-md rounded-2xl bg-gradient-brand text-sm font-semibold text-white shadow-glow transition-transform active:scale-[0.98]"
+              >
+                Get Started
+              </Link>
             )}
             {notice && (
               <p className="mt-1 max-w-md rounded-2xl bg-gradient-soft p-3 text-center text-[11px] font-medium text-primary">
