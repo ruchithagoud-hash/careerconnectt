@@ -45,14 +45,6 @@ function Welcome() {
     navigate({ to: "/results" });
   };
 
-  const handleLinkedIn = async () => {
-    const redirect = `${window.location.origin}/auth?redirect=${encodeURIComponent("/profile")}`;
-    await supabase.auth.signInWithOAuth({
-      provider: "linkedin_oidc",
-      options: { redirectTo: redirect },
-    });
-  };
-
   return (
     <AppShell>
       <main className="relative flex flex-1 flex-col px-4 pb-4 pt-4 sm:px-6 sm:pb-5 sm:pt-5">
