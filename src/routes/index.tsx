@@ -1,10 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Sparkles, Compass, Rocket, Brain, Linkedin, Search, UserCog } from "lucide-react";
+import { Sparkles, Compass, Rocket, Brain, Search, UserCog } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { ProfileMenu } from "@/components/ProfileMenu";
 import { useAuth } from "@/hooks/use-auth";
-import { supabase } from "@/integrations/supabase/client";
 import { isProfileComplete, loadProfile, missingRequired } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/")({
