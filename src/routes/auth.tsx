@@ -99,14 +99,21 @@ function AuthPage() {
       : undefined;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "linkedin_oidc",
-      options: { redirectTo: redirect },
+      options: {
+        redirectTo: redirect,
+        scopes: "openid profile email",
+      },
     });
     if (error) {
       setBusy(false);
-      setError(error.message);
+      const msg = /provider is not enabled|unsupported provider/i.test(error.message)
+        ? "LinkedIn sign-in isn't enabled on the backend yet. Enable the LinkedIn (OIDC) provider with your LinkedIn Client ID and Secret, then try again."
+        : error.message;
+      setError(msg);
     }
     // On success the browser is redirected to LinkedIn.
   }
+
 
   return (
     <AppShell>
