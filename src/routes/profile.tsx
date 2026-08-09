@@ -38,6 +38,32 @@ import {
 } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 
+/** Open the stored resume in a new tab for inline viewing (never triggers a download). */
+function openResumePreview(source: string, fileName?: string) {
+  if (!source) return;
+  // Already a URL/blob/object URL — reuse it directly.
+  if (!source.startsWith("data:")) {
+    window.open(source, "_blank", "noopener,noreferrer");
+    return;
+  }
+  try {
+    const [header, base64] = source.split(",");
+    const declared = header.match(/data:([^;]+)/)?.[1] ?? "";
+    const isPdf = declared === "application/pdf" || (fileName ?? "").toLowerCase().endsWith(".pdf");
+    const mime = isPdf ? "application/pdf" : declared || "application/octet-stream";
+    const bytes = atob(base64);
+    const buffer = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) buffer[i] = bytes.charCodeAt(i);
+    const blobUrl = URL.createObjectURL(new Blob([buffer], { type: mime }));
+    window.open(blobUrl, "_blank", "noopener,noreferrer");
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+  } catch {
+    window.open(source, "_blank", "noopener,noreferrer");
+  }
+}
+
+
+
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
