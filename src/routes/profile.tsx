@@ -38,6 +38,32 @@ import {
 } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 
+/** Open the stored resume in a new tab for inline viewing (never triggers a download). */
+function openResumePreview(source: string, fileName?: string) {
+  if (!source) return;
+  // Already a URL/blob/object URL — reuse it directly.
+  if (!source.startsWith("data:")) {
+    window.open(source, "_blank", "noopener,noreferrer");
+    return;
+  }
+  try {
+    const [header, base64] = source.split(",");
+    const declared = header.match(/data:([^;]+)/)?.[1] ?? "";
+    const isPdf = declared === "application/pdf" || (fileName ?? "").toLowerCase().endsWith(".pdf");
+    const mime = isPdf ? "application/pdf" : declared || "application/octet-stream";
+    const bytes = atob(base64);
+    const buffer = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) buffer[i] = bytes.charCodeAt(i);
+    const blobUrl = URL.createObjectURL(new Blob([buffer], { type: mime }));
+    window.open(blobUrl, "_blank", "noopener,noreferrer");
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+  } catch {
+    window.open(source, "_blank", "noopener,noreferrer");
+  }
+}
+
+
+
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
@@ -354,7 +380,7 @@ function Profile() {
                 <button
                   type="button"
                   disabled={!data.resumeDataUrl}
-                  onClick={() => window.open(data.resumeDataUrl, "_blank")}
+                  onClick={() => openResumePreview(data.resumeDataUrl, data.resumeName)}
                   className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary disabled:opacity-50"
                 >
                   <Eye className="h-4 w-4 text-primary" /> Preview
