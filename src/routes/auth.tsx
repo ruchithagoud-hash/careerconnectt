@@ -161,8 +161,6 @@ function AuthPage() {
               <button type="button" onClick={() => { setMode("login"); reset(); }} className="w-full text-xs font-semibold text-primary">Back to sign in</button>
             </form>
           )}
-
-          }
         </div>
       </main>
     </AppShell>
