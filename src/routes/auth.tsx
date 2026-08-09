@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Sparkles, Mail, Lock, ArrowLeft, Linkedin } from "lucide-react";
+import { Sparkles, Mail, Lock, ArrowLeft } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -92,29 +92,6 @@ function AuthPage() {
     else setInfo("Check your email for a password reset link.");
   }
 
-  async function handleLinkedIn() {
-    reset(); setBusy(true);
-    const redirect = typeof window !== "undefined"
-      ? `${window.location.origin}/auth?redirect=${encodeURIComponent(getRedirectTarget())}`
-      : undefined;
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "linkedin_oidc",
-      options: {
-        redirectTo: redirect,
-        scopes: "openid profile email",
-      },
-    });
-    if (error) {
-      setBusy(false);
-      const msg = /provider is not enabled|unsupported provider/i.test(error.message)
-        ? "LinkedIn sign-in isn't enabled on the backend yet. Enable the LinkedIn (OIDC) provider with your LinkedIn Client ID and Secret, then try again."
-        : error.message;
-      setError(msg);
-    }
-    // On success the browser is redirected to LinkedIn.
-  }
-
-
   return (
     <AppShell>
       <main className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-5 pb-8 pt-8 sm:px-6">
@@ -183,24 +160,6 @@ function AuthPage() {
               <SubmitButton busy={busy}>Send reset link</SubmitButton>
               <button type="button" onClick={() => { setMode("login"); reset(); }} className="w-full text-xs font-semibold text-primary">Back to sign in</button>
             </form>
-          )}
-
-          {mode !== "forgot" && (
-            <>
-              <div className="mt-5 flex items-center gap-3">
-                <div className="h-px flex-1 bg-border" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">or</span>
-                <div className="h-px flex-1 bg-border" />
-              </div>
-              <button
-                type="button"
-                onClick={handleLinkedIn}
-                disabled={busy}
-                className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary disabled:opacity-60"
-              >
-                <Linkedin className="h-4 w-4 text-[#0A66C2]" /> Continue with LinkedIn
-              </button>
-            </>
           )}
         </div>
       </main>
