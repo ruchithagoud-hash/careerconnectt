@@ -354,7 +354,7 @@ function Profile() {
                 <button
                   type="button"
                   disabled={!data.resumeDataUrl}
-                  onClick={() => window.open(data.resumeDataUrl, "_blank")}
+                  onClick={() => openResumePreview(data.resumeDataUrl, data.resumeName)}
                   className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl border border-border bg-card text-sm font-semibold text-foreground transition hover:bg-secondary disabled:opacity-50"
                 >
                   <Eye className="h-4 w-4 text-primary" /> Preview
