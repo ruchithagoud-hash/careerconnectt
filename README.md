@@ -1,4 +1,4 @@
-# CareerCompass AI 🎯
+# CareerConnect AI 🎯
 
 CareerCompass AI is an intelligent career guidance platform that helps students discover suitable career paths based on their academic background, technical skills, certifications, projects, interests, and experience.
 
